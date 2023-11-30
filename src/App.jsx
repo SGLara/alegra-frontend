@@ -1,5 +1,6 @@
 // Import necessary dependencies
 import { Box, Button, Container, Paper, Typography } from '@mui/material'
+import { useQueryClient } from 'react-query'
 import { setOrder } from './api/order-service'
 import Inventory from './components/Inventory'
 import KitchenOrderQueue from './components/KitchenOrderQueue'
@@ -9,15 +10,26 @@ import PurchaseHistory from './components/PurchaseHistory'
 
 // Main App component
 export default function App () {
+  const queryClient = useQueryClient()
+
   const placeOrder = async () => {
-    return setOrder()
+    await setOrder()
+
+    queryClient.invalidateQueries('kitchenOrders')
+    queryClient.invalidateQueries('inventory')
+    queryClient.invalidateQueries('purchaseHistory')
+    queryClient.invalidateQueries('orderHistory')
+    queryClient.invalidateQueries('recipes')
   }
 
   return (
     <Container
-      maxWidth='lg'
+      maxWidth='xl'
       sx={{
-        margin: '2.5rem auto 2rem'
+        margin: '2.5rem auto 2rem',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
       }}
     >
       <Paper
@@ -28,7 +40,8 @@ export default function App () {
           justifyContent: 'space-between',
           gap: 2,
           p: 4,
-          backgroundColor: '#00A295'
+          backgroundColor: '#00A295',
+          maxHeight: '80rem'
         }}
       >
         <Typography
@@ -47,11 +60,17 @@ export default function App () {
 
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr 1fr 1fr',
+            gridTemplateRows: '50% 50%',
+            gridTemplateAreas: `
+            "kitchen inventory purchaseHistory orderHistory"
+            "kitchen menu menu menu"
+            `,
             gap: 2,
             border: '2px solid #ccc',
-            padding: '1rem'
+            padding: '2rem',
+            maxHeight: '55rem'
           }}
         >
           <KitchenOrderQueue />
