@@ -33,7 +33,16 @@ export default function KitchenOrderQueue () {
                   ? (
                       orders.map(order => (
                         <ListItem key={order.id}>
-                          <ListItemText primary={`Order ${order.id}: ${order.status}`} />
+                          {
+                           order.status === 'processing'
+                             ? (
+                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                 <ListItemText primary={`Order ${order.id}: ${order.status}...`} sx={{ fontStyle: 'italic' }} />
+                                 <CircularProgress sx={{ color: '#00A295' }} size={20} />
+                               </div>
+                               )
+                             : <ListItemText primary={`Order ${order.id}: ${order.status}`} />
+                          }
                         </ListItem>
                       ))
                     )
